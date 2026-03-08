@@ -1,0 +1,1 @@
+console.log("AVL Visualizer Loaded");
