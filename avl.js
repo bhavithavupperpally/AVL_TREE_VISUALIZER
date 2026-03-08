@@ -1,3 +1,4 @@
+let operations = []
 class AVLNode {
     constructor(data){
         this.data = data
@@ -56,31 +57,41 @@ class AVLTree {
 
     leftRotate(root){
 
-        let newRoot = root.right
+    operations.push({
+    type: "LEFT_ROTATE",
+    node: root.data
+})
 
-        root.right = newRoot.left
+    let newRoot = root.right
 
-        newRoot.left = root
+    root.right = newRoot.left
 
-        this.updateHeight(root)
-        this.updateHeight(newRoot)
+    newRoot.left = root
 
-        return newRoot
-    }
+    this.updateHeight(root)
+    this.updateHeight(newRoot)
+
+    return newRoot
+}
 
     rightRotate(root){
 
-        let newRoot = root.left
+    operations.push({
+    type: "RIGHT_ROTATE",
+    node: root.data
+})
 
-        root.left = newRoot.right
+    let newRoot = root.left
 
-        newRoot.right = root
+    root.left = newRoot.right
 
-        this.updateHeight(root)
-        this.updateHeight(newRoot)
+    newRoot.right = root
 
-        return newRoot
-    }
+    this.updateHeight(root)
+    this.updateHeight(newRoot)
+
+    return newRoot
+}
 
     updateHeight(root){
 

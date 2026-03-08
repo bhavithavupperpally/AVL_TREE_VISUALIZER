@@ -6,6 +6,8 @@ function insertNode(){
 
     // insert into AVL tree
     root = tree.insert(root, parseInt(val))
+    console.log(operations)
+    operations = []
 
     // clear old drawing
     let svg = document.getElementById("tree")
