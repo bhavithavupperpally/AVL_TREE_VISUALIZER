@@ -66,3 +66,15 @@ button:hover{
     margin:10px;
     color:#facc15;
 }
+circle{
+    cursor:pointer;
+}
+
+text{
+    font-weight:bold;
+    pointer-events:none;
+}
+circle{
+    stroke:white;
+    stroke-width:2;
+}

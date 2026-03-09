@@ -5,43 +5,31 @@ function insertNode(){
 
     let svg = document.getElementById("tree")
 
-    // Clone current tree (before insertion)
-    let beforeTree = structuredClone(root)
-
-    // Insert new node (AVL may rotate)
     root = tree.insert(root, parseInt(val))
-
-    let afterTree = structuredClone(root)
 
     console.log(operations)
 
-    // Step 1: show tree BEFORE rotation
-    svg.innerHTML = ""
-    drawTree(beforeTree, 400, 50, 200)
+    // remove old edges only
+    let lines = svg.querySelectorAll("line")
+    lines.forEach(l => l.remove())
+
+    drawTree(root,400,50,200)
 
     if(operations.length > 0){
 
         let rotateNode = operations[0].node
-        document.getElementById("rotationLabel").innerText =
-        "Rotation: " + operations[0].type
 
-        // highlight imbalance
         highlightNode(rotateNode)
 
-        // Step 2: show tree AFTER rotation
         setTimeout(() => {
 
-            svg.innerHTML = ""
-            drawTree(afterTree, 400, 50, 200)
+            // redraw edges after animation
+            let lines = svg.querySelectorAll("line")
+            lines.forEach(l => l.remove())
 
-        },1200)
+            drawTree(root,400,50,200)
 
-    }
-    else{
-
-        // no rotation needed
-        svg.innerHTML = ""
-        drawTree(afterTree, 400, 50, 200)
+        },1000)
 
     }
 
@@ -50,100 +38,92 @@ function insertNode(){
 
 
 
-function drawTree(node, x, y, gap){
+function drawTree(node,x,y,gap){
 
     if(node == null) return
 
     let svg = document.getElementById("tree")
 
-    // create circle
-    let circle = document.createElementNS("http://www.w3.org/2000/svg","circle")
+    let circleId = "circle-" + node.data
+    let textId = "text-" + node.data
 
-    circle.setAttribute("cx", x)
-    circle.setAttribute("cy", y)
-    circle.setAttribute("r", 20)
-    circle.setAttribute("fill", "#3b82f6")
+    let circle = document.getElementById(circleId)
+    let text = document.getElementById(textId)
 
-    circle.style.transition = "all 0.6s ease"
+    // create node if it doesn't exist
+    if(!circle){
 
-    svg.appendChild(circle)
+        circle = document.createElementNS("http://www.w3.org/2000/svg","circle")
+        circle.setAttribute("id",circleId)
+        circle.setAttribute("r",20)
+        circle.setAttribute("fill","#3b82f6")
 
-    // create text
-    let text = document.createElementNS("http://www.w3.org/2000/svg","text")
+        circle.style.transition = "all 1s ease"
 
-    text.setAttribute("x", x)
-    text.setAttribute("y", y + 5)
-    text.setAttribute("text-anchor", "middle")
-    text.setAttribute("fill", "white")
+        svg.appendChild(circle)
 
-    text.style.transition = "all 0.6s ease"
+        text = document.createElementNS("http://www.w3.org/2000/svg","text")
+        text.setAttribute("id",textId)
+        text.setAttribute("text-anchor","middle")
+        text.setAttribute("fill","white")
+        text.textContent = node.data
 
-    text.textContent = node.data
+        text.style.transition = "all 0.8s ease"
 
-    svg.appendChild(text)
+        svg.appendChild(text)
+    }
 
-    // draw left subtree
-    if(node.left != null){
+    // update position (animation happens here)
+    circle.setAttribute("cx",x)
+    circle.setAttribute("cy",y)
 
-        drawLine(x, y, x-gap, y+80)
+    text.setAttribute("x",x)
+    text.setAttribute("y",y+5)
 
-        drawTree(node.left, x-gap, y+80, gap/2)
+    // draw left child
+    if(node.left){
+
+        drawLine(x,y,x-gap,y+80)
+        drawTree(node.left,x-gap,y+80,gap/2)
 
     }
 
-    // draw right subtree
-    if(node.right != null){
+    // draw right child
+    if(node.right){
 
-        drawLine(x, y, x+gap, y+80)
-
-        drawTree(node.right, x+gap, y+80, gap/2)
+        drawLine(x,y,x+gap,y+80)
+        drawTree(node.right,x+gap,y+80,gap/2)
 
     }
-
 }
 
 
 
-function drawLine(x1, y1, x2, y2){
+function drawLine(x1,y1,x2,y2){
 
     let svg = document.getElementById("tree")
 
     let line = document.createElementNS("http://www.w3.org/2000/svg","line")
 
-    line.setAttribute("x1", x1)
-    line.setAttribute("y1", y1)
-    line.setAttribute("x2", x2)
-    line.setAttribute("y2", y2)
+    line.setAttribute("x1",x1)
+    line.setAttribute("y1",y1)
+    line.setAttribute("x2",x2)
+    line.setAttribute("y2",y2)
 
-    line.setAttribute("stroke", "black")
-    line.setAttribute("stroke-width", "2")
-
-    line.style.transition = "all 0.6s ease"
+    line.setAttribute("stroke","black")
+    line.setAttribute("stroke-width","2")
 
     svg.appendChild(line)
-
 }
 
 
 
 function highlightNode(value){
 
-    let svg = document.getElementById("tree")
+    let circle = document.getElementById("circle-" + value)
 
-    let texts = svg.getElementsByTagName("text")
-
-    for(let t of texts){
-
-        if(t.textContent == value){
-
-            let circle = t.previousElementSibling
-
-            if(circle){
-                circle.setAttribute("fill","red")
-            }
-
-        }
-
+    if(circle){
+        circle.setAttribute("fill","red")
     }
 
 }
