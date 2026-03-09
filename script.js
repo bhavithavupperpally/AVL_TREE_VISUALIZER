@@ -4,19 +4,42 @@ function insertNode(){
 
     if(val === "") return
 
-    // insert into AVL tree
-    root = tree.insert(root, parseInt(val))
-    console.log(operations)
-    operations = []
-
-    // clear old drawing
     let svg = document.getElementById("tree")
+
+    // Save old tree before rotation
+    let oldRoot = root
+
+    // Perform insertion (AVL may rotate internally)
+    root = tree.insert(root, parseInt(val))
+
+    console.log(operations)
+
+    // Clear drawing
     svg.innerHTML = ""
 
-    // redraw tree
+    // Draw tree
     drawTree(root, 400, 50, 200)
 
+    if(operations.length > 0){
+
+        let rotateNode = operations[0].node
+
+        // Highlight unbalanced node
+        highlightNode(rotateNode)
+
+        // After delay show balanced tree again
+        setTimeout(() => {
+
+            svg.innerHTML = ""
+            drawTree(root, 400, 50, 200)
+
+        },1000)
+
+    }
+
+    operations = []
 }
+
 
 
 function drawTree(node, x, y, gap){
@@ -68,6 +91,7 @@ function drawTree(node, x, y, gap){
 }
 
 
+
 function drawLine(x1, y1, x2, y2){
 
     let svg = document.getElementById("tree")
@@ -83,5 +107,29 @@ function drawLine(x1, y1, x2, y2){
     line.setAttribute("stroke-width", "2")
 
     svg.appendChild(line)
+
+}
+
+
+
+function highlightNode(value){
+
+    let svg = document.getElementById("tree")
+
+    let texts = svg.getElementsByTagName("text")
+
+    for(let t of texts){
+
+        if(t.textContent == value){
+
+            let circle = t.previousElementSibling
+
+            if(circle){
+                circle.setAttribute("fill","red")
+            }
+
+        }
+
+    }
 
 }
