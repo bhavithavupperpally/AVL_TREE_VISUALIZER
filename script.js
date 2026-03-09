@@ -1,19 +1,15 @@
 function insertNode(){
 
-    let val = document.getElementById("value").value
-    if(val === "") return
+    let input = document.getElementById("value")
+    let val = input.value
 
-    let svg = document.getElementById("tree")
+    if(val === "") return
 
     root = tree.insert(root, parseInt(val))
 
     console.log(operations)
 
-    // remove old edges only
-    let lines = svg.querySelectorAll("line")
-    lines.forEach(l => l.remove())
-
-    drawTree(root,400,50,200)
+    renderTree()
 
     if(operations.length > 0){
 
@@ -23,17 +19,29 @@ function insertNode(){
 
         setTimeout(() => {
 
-            // redraw edges after animation
-            let lines = svg.querySelectorAll("line")
-            lines.forEach(l => l.remove())
-
-            drawTree(root,400,50,200)
+            renderTree()
 
         },1000)
 
     }
 
     operations = []
+
+    // clear textbox
+    input.value = ""
+}
+
+
+
+function renderTree(){
+
+    let svg = document.getElementById("tree")
+
+    // remove old edges only
+    let lines = svg.querySelectorAll("line")
+    lines.forEach(l => l.remove())
+
+    drawTree(root,400,50,200)
 }
 
 
@@ -68,12 +76,12 @@ function drawTree(node,x,y,gap){
         text.setAttribute("fill","white")
         text.textContent = node.data
 
-        text.style.transition = "all 0.8s ease"
+        text.style.transition = "all 1s ease"
 
         svg.appendChild(text)
     }
 
-    // update position (animation happens here)
+    // update positions (animation happens here)
     circle.setAttribute("cx",x)
     circle.setAttribute("cy",y)
 
@@ -127,3 +135,14 @@ function highlightNode(value){
     }
 
 }
+
+
+
+// Enter key insertion
+document.getElementById("value").addEventListener("keypress", function(event){
+
+    if(event.key === "Enter"){
+        insertNode()
+    }
+
+})
