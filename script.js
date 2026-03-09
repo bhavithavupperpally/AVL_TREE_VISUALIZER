@@ -1,39 +1,47 @@
 function insertNode(){
 
     let val = document.getElementById("value").value
-
     if(val === "") return
 
     let svg = document.getElementById("tree")
 
-    // Save old tree before rotation
-    let oldRoot = root
+    // Clone current tree (before insertion)
+    let beforeTree = structuredClone(root)
 
-    // Perform insertion (AVL may rotate internally)
+    // Insert new node (AVL may rotate)
     root = tree.insert(root, parseInt(val))
+
+    let afterTree = structuredClone(root)
 
     console.log(operations)
 
-    // Clear drawing
+    // Step 1: show tree BEFORE rotation
     svg.innerHTML = ""
-
-    // Draw tree
-    drawTree(root, 400, 50, 200)
+    drawTree(beforeTree, 400, 50, 200)
 
     if(operations.length > 0){
 
         let rotateNode = operations[0].node
+        document.getElementById("rotationLabel").innerText =
+        "Rotation: " + operations[0].type
 
-        // Highlight unbalanced node
+        // highlight imbalance
         highlightNode(rotateNode)
 
-        // After delay show balanced tree again
+        // Step 2: show tree AFTER rotation
         setTimeout(() => {
 
             svg.innerHTML = ""
-            drawTree(root, 400, 50, 200)
+            drawTree(afterTree, 400, 50, 200)
 
-        },1000)
+        },1200)
+
+    }
+    else{
+
+        // no rotation needed
+        svg.innerHTML = ""
+        drawTree(afterTree, 400, 50, 200)
 
     }
 
@@ -54,7 +62,9 @@ function drawTree(node, x, y, gap){
     circle.setAttribute("cx", x)
     circle.setAttribute("cy", y)
     circle.setAttribute("r", 20)
-    circle.setAttribute("fill", "#4CAF50")
+    circle.setAttribute("fill", "#3b82f6")
+
+    circle.style.transition = "all 0.6s ease"
 
     svg.appendChild(circle)
 
@@ -65,6 +75,8 @@ function drawTree(node, x, y, gap){
     text.setAttribute("y", y + 5)
     text.setAttribute("text-anchor", "middle")
     text.setAttribute("fill", "white")
+
+    text.style.transition = "all 0.6s ease"
 
     text.textContent = node.data
 
@@ -105,6 +117,8 @@ function drawLine(x1, y1, x2, y2){
 
     line.setAttribute("stroke", "black")
     line.setAttribute("stroke-width", "2")
+
+    line.style.transition = "all 0.6s ease"
 
     svg.appendChild(line)
 
