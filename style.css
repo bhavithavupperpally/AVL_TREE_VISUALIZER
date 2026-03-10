@@ -9,11 +9,9 @@ body{
 }
 
 .container{
-
-    width:900px;
+    width:1200px;
     margin:auto;
-    padding-top:40px;
-
+    text-align:center;
 }
 
 h1{
@@ -57,15 +55,18 @@ button:hover{
 }
 
 #tree{
-
-    background:white;
-    border-radius:10px;
+     background:white;
+    display:block;
+    margin:auto;
+    max-width:100%;
 }
 #rotationLabel{
-    font-size:18px;
+    font-size:20px;
+    font-weight:bold;
+    color:#ff9800;
     margin:10px;
-    color:#facc15;
 }
+
 circle{
     cursor:pointer;
 }
@@ -81,4 +82,14 @@ circle{
 text{
     font-size:12px;
     font-weight:bold;
+}
+.tree-container{
+    width:100%;
+    overflow:hidden;
+    background:white;
+    border-radius:10px;
+}
+line{
+    stroke:#333;
+    stroke-width:2;
 }

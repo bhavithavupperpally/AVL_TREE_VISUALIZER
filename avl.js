@@ -1,4 +1,5 @@
 let operations = []
+
 class AVLNode {
 
     constructor(data){
@@ -22,37 +23,48 @@ insert(root,x){
     }
 
     if(x < root.data){
-
         root.left = this.insert(root.left,x)
-
     }
-    else{  // duplicates go to right
-
+    else{
         root.right = this.insert(root.right,x)
-
     }
 
     this.updateHeight(root)
 
-    if(this.getBF(root) == -2){
+    let bf = this.getBF(root)
+
+    if(bf == -2){
 
         if(this.getBF(root.right) <= 0){
+
+            operations.push({type:"RR", node:root.id})
             root = this.leftRotate(root)
+
         }
         else{
+
+            operations.push({type:"RL", node:root.id})
             root.right = this.rightRotate(root.right)
             root = this.leftRotate(root)
+
         }
 
     }
-    else if(this.getBF(root) == 2){
+
+    else if(bf == 2){
 
         if(this.getBF(root.left) >= 0){
+
+            operations.push({type:"LL", node:root.id})
             root = this.rightRotate(root)
+
         }
         else{
+
+            operations.push({type:"LR", node:root.id})
             root.left = this.leftRotate(root.left)
             root = this.rightRotate(root)
+
         }
 
     }
@@ -60,17 +72,11 @@ insert(root,x){
     return root
 }
 
-    leftRotate(root){
-
-    operations.push({
-    type: "LEFT_ROTATE",
-    node: root.data
-})
+leftRotate(root){
 
     let newRoot = root.right
 
     root.right = newRoot.left
-
     newRoot.left = root
 
     this.updateHeight(root)
@@ -79,17 +85,11 @@ insert(root,x){
     return newRoot
 }
 
-    rightRotate(root){
-
-    operations.push({
-    type: "RIGHT_ROTATE",
-    node: root.data
-})
+rightRotate(root){
 
     let newRoot = root.left
 
     root.left = newRoot.right
-
     newRoot.right = root
 
     this.updateHeight(root)
@@ -98,26 +98,27 @@ insert(root,x){
     return newRoot
 }
 
-    updateHeight(root){
+updateHeight(root){
 
-        if(root == null) return
+    if(root == null) return
 
-        let lh = root.left ? root.left.h : 0
-        let rh = root.right ? root.right.h : 0
+    let lh = root.left ? root.left.h : 0
+    let rh = root.right ? root.right.h : 0
 
-        root.h = 1 + Math.max(lh,rh)
-    }
+    root.h = 1 + Math.max(lh,rh)
+}
 
-    getBF(root){
+getBF(root){
 
-        if(root == null) return 0
+    if(root == null) return 0
 
-        let lh = root.left ? root.left.h : 0
-        let rh = root.right ? root.right.h : 0
+    let lh = root.left ? root.left.h : 0
+    let rh = root.right ? root.right.h : 0
 
-        return lh - rh
-    }
+    return lh - rh
+}
 
 }
+
 let tree = new AVLTree()
 let root = null
