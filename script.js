@@ -75,7 +75,8 @@ function drawTree(node,x,y,gap){
         text.setAttribute("id",textId)
         text.setAttribute("text-anchor","middle")
         text.setAttribute("fill","white")
-        text.textContent = node.data
+        let bf = tree.getBF(node)
+        text.textContent = node.data + "|" + bf
 
         text.style.transition = "all 1s ease"
 
@@ -88,6 +89,8 @@ function drawTree(node,x,y,gap){
 
     text.setAttribute("x",x)
     text.setAttribute("y",y+5)
+    let bf = tree.getBF(node)
+    text.textContent = node.data + "|" + bf
 
     // draw left child
     if(node.left){
