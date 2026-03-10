@@ -1,59 +1,64 @@
 let operations = []
 class AVLNode {
+
     constructor(data){
+
         this.data = data
         this.left = null
         this.right = null
         this.h = 1
+
+        this.id = nodeCounter++
     }
+
 }
 
 class AVLTree {
 
-    insert(root,x){
+insert(root,x){
 
-        if(root == null){
-            return new AVLNode(x)
-        }
+    if(root == null){
+        return new AVLNode(x)
+    }
 
-        if(x < root.data){
-            root.left = this.insert(root.left,x)
+    if(x < root.data){
+
+        root.left = this.insert(root.left,x)
+
+    }
+    else{  // duplicates go to right
+
+        root.right = this.insert(root.right,x)
+
+    }
+
+    this.updateHeight(root)
+
+    if(this.getBF(root) == -2){
+
+        if(this.getBF(root.right) <= 0){
+            root = this.leftRotate(root)
         }
         else{
-            root.right = this.insert(root.right,x)
+            root.right = this.rightRotate(root.right)
+            root = this.leftRotate(root)
         }
 
-        this.updateHeight(root)
-
-        if(this.getBF(root) == -2){ // Right heavy
-
-            if(this.getBF(root.right) == -1){ // RR
-                root = this.leftRotate(root)
-            }
-            else{ // RL
-
-                root.right = this.rightRotate(root.right)
-                root = this.leftRotate(root)
-
-            }
-
-        }
-        else if(this.getBF(root) == 2){ // Left heavy
-
-            if(this.getBF(root.left) == 1){ // LL
-                root = this.rightRotate(root)
-            }
-            else{ // LR
-
-                root.left = this.leftRotate(root.left)
-                root = this.rightRotate(root)
-
-            }
-
-        }
-
-        return root
     }
+    else if(this.getBF(root) == 2){
+
+        if(this.getBF(root.left) >= 0){
+            root = this.rightRotate(root)
+        }
+        else{
+            root.left = this.leftRotate(root.left)
+            root = this.rightRotate(root)
+        }
+
+    }
+
+    return root
+}
 
     leftRotate(root){
 

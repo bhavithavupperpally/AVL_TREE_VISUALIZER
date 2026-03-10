@@ -1,3 +1,4 @@
+let nodeCounter = 0
 function insertNode(){
 
     let input = document.getElementById("value")
@@ -52,8 +53,8 @@ function drawTree(node,x,y,gap){
 
     let svg = document.getElementById("tree")
 
-    let circleId = "circle-" + node.data
-    let textId = "text-" + node.data
+    let circleId = "circle-" + node.id
+    let textId = "text-" + node.id
 
     let circle = document.getElementById(circleId)
     let text = document.getElementById(textId)
