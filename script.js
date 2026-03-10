@@ -44,17 +44,38 @@ function renderTree(){
 
     svg.querySelectorAll("line").forEach(l => l.remove())
 
-    let initialGap = width / 4
+    computeLayout(root)
 
-    drawTree(root, width/2, 60, initialGap)
+    let minX = Infinity
+    let maxX = -Infinity
+
+    collectBounds(root)
+
+    function collectBounds(node){
+        if(!node) return
+        minX = Math.min(minX,node.x)
+        maxX = Math.max(maxX,node.x)
+        collectBounds(node.left)
+        collectBounds(node.right)
+    }
+
+    let treeWidth = maxX - minX + 1
+    let scale = width / (treeWidth + 2)
+
+    normalizeLayout(root, scale, -minX + 1)
+
+    drawTree(root)
 
 }
 
-function drawTree(node, x, y, gap){
+function drawTree(node){
 
     if(!node) return
 
     let svg = document.getElementById("tree")
+
+    let x = node.x
+    let y = node.y
 
     let circleId = "circle-" + node.id
     let textId = "text-" + node.id
@@ -89,25 +110,17 @@ function drawTree(node, x, y, gap){
     let bf = tree.getBF(node)
     text.textContent = node.data + "|" + bf
 
-    let childY = y + 90
-
     if(node.left){
 
-        let childX = x - gap
-
-        drawLine(x,y,childX,childY)
-
-        drawTree(node.left, childX, childY, gap * 0.6)
+        drawLine(x,y,node.left.x,node.left.y)
+        drawTree(node.left)
 
     }
 
     if(node.right){
 
-        let childX = x + gap
-
-        drawLine(x,y,childX,childY)
-
-        drawTree(node.right, childX, childY, gap * 0.6)
+        drawLine(x,y,node.right.x,node.right.y)
+        drawTree(node.right)
 
     }
 
@@ -166,29 +179,31 @@ function getTreeHeight(node){
     )
 }
 
-function getMaxWidth(root){
 
-    if(!root) return 0
+let nextPos = 0
 
-    let queue = [root]
-    let maxWidth = 0
+function computeLayout(node, depth=0){
 
-    while(queue.length){
+    if(!node) return
 
-        let size = queue.length
-        maxWidth = Math.max(maxWidth,size)
+    computeLayout(node.left, depth+1)
 
-        for(let i=0;i<size;i++){
+    node.x = nextPos++
+    node.y = depth
 
-            let node = queue.shift()
+    computeLayout(node.right, depth+1)
 
-            if(node.left) queue.push(node.left)
-            if(node.right) queue.push(node.right)
+}
+function normalizeLayout(node, scale, shift){
 
-        }
-    }
+    if(!node) return
 
-    return maxWidth
+    node.x = (node.x + shift) * scale
+    node.y = node.y * 90 + 60
+
+    normalizeLayout(node.left, scale, shift)
+    normalizeLayout(node.right, scale, shift)
+
 }
 
 
